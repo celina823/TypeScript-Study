@@ -1,0 +1,13 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    "outDir": "./built", //산출물을 출력하는 곳은 built라는 디렉토리
+    "allowJs": true, //js파일이 있는 것 허용
+    "target": "es5"
+  },
+  "include": ["./src/**/*"] //src아래에 있는 파일들을 ts로
+}
