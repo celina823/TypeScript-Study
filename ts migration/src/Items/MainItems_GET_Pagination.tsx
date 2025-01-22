@@ -1,16 +1,24 @@
 import arrowLeft from "../Assets/arrowLeft.png";
 import arrowRight from "../Assets/arrowRight.png";
 
+interface Items_Pagination {
+  currentPage: number;
+  totalCount: number;
+  pageSize: number;
+  onPageChange: (newPage: number) => void;
+}
+
 export const MainItemsGetPagination = ({
-  currentPage: number,
-  totalCount: number,
-  pageSize: number,
-  onPageChange, //질문하기-이건 무슨타입인지,
-}) => {
-  const totalPages = Math.ceil(totalCount / pageSize); // 전체 페이지 수
-  const pageLimit = 5; // 한번에 보여줄 페이지번호 개수
-  const startPage = Math.floor((currentPage - 1) / pageLimit) * pageLimit + 1; // 보여줄 페이지 범위의 시작 번호
-  const endPage = Math.min(startPage + pageLimit - 1, totalPages); // 보여줄 페이지 범위의 끝 번호
+  currentPage,
+  totalCount,
+  pageSize,
+  onPageChange,
+}: Items_Pagination) => {
+  const totalPages: number = Math.ceil(totalCount / pageSize); // 전체 페이지 수
+  const pageLimit: number = 5; // 한번에 보여줄 페이지번호 개수
+  const startPage: number =
+    Math.floor((currentPage - 1) / pageLimit) * pageLimit + 1; // 보여줄 페이지 범위의 시작 번호
+  const endPage: number = Math.min(startPage + pageLimit - 1, totalPages); // 보여줄 페이지 범위의 끝 번호
 
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return;

@@ -8,7 +8,7 @@ export function MainItemsGET({ page = 1, keyword = "" }) {
   const [data, setData] = useState(null); // 데이터를 저장할 상태
   const [currentPage, setCurrentPage] = useState(page); // 현재 페이지 상태 관리
   const [totalCount, setTotalCount] = useState(0); // 전체 데이터 개수 상태
-  const pageSize = 10; // 한 페이지당 보여줄 항목 수
+  const pageSize: number = 10; // 한 페이지당 보여줄 항목 수
 
   // 데이터 불러오는 useEffect 훅
   useEffect(() => {
