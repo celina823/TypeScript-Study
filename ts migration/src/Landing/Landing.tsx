@@ -6,7 +6,7 @@ import "./Landing.css";
 
 export function Landing() {
   return (
-    <div>
+    <div id="containerAll">
       <HeaderLanding />
       <MainLanding />
       <FooterLanding />
