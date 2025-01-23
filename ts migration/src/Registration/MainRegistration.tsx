@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ChangeEvent, KeyboardEvent } from "react";
 import axios from "axios";
 import { useValidation } from "./useValidation"; // 커스텀 훅 불러오기
 import "./Registration.css";
@@ -6,13 +6,20 @@ import IcX from "../Assets/Ic_X.png";
 
 const API_URL = "https://five-sprint-mission-be-1.onrender.com";
 
+interface TouchedState {
+  productName: boolean;
+  productDescription: boolean;
+  productPrice: boolean;
+  productTag: boolean;
+}
+
 export function MainRegistration() {
-  const [productName, setProductName] = useState("");
-  const [productDescription, setProductDescription] = useState("");
-  const [productPrice, setProductPrice] = useState("");
-  const [productTag, setProductTag] = useState("");
-  const [tags, setTags] = useState([]); // 칩 형태로 보여줄 태그 상태
-  const [touched, setTouched] = useState({
+  const [productName, setProductName] = useState<string>("");
+  const [productDescription, setProductDescription] = useState<string>("");
+  const [productPrice, setProductPrice] = useState<number>(0);
+  const [productTag, setProductTag] = useState<string>("");
+  const [tags, setTags] = useState<string[]>([]); // 칩 형태로 보여줄 태그 상태
+  const [touched, setTouched] = useState<TouchedState>({
     productName: false,
     productDescription: false,
     productPrice: false,
@@ -24,35 +31,34 @@ export function MainRegistration() {
   const isFormValid = Object.keys(errors).length === 0; // 유효성 검사
 
   // 가격에 쉼표를 자동으로 추가하는 함수
-  const formatPrice = (value) => {
-    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // 1000단위로 쉼표 추가
+  const formatPrice = (value: number) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); // 수정: 숫자를 문자열로 변환하고 쉼표 추가
   };
 
   // 숫자에 쉼표가 추가된 가격을 다시 숫자로 변환하는 함수
-  const unformatPrice = (value) => {
-    return value.replace(/,/g, ""); // 쉼표를 제거하고 숫자로 반환
+  const unformatPrice = (value: string) => {
+    // value의 타입을 string으로 (나중에 number로 변환)
+    return value.toString().replace(/,/g, ""); // 쉼표를 제거하고 숫자로 반환
   };
 
   // 가격 변경 핸들러
-  const handlePriceChange = (e) => {
+  const handlePriceChange = (e: ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
     console.log("입력된 판매가격 확인용", value);
     // 숫자만 남기고, 쉼표가 들어가게 함
-    value = unformatPrice(value); // 쉼표 제거
-    value = formatPrice(value); // 쉼표 추가
-
-    setProductPrice(value); // 상태 업데이트
-    validate(productName, productDescription, value, productTag); // 가격에 대한 유효성 검사 추가
+    value = unformatPrice(value).toString(); // 숫자 값으로 변환 후 문자열로 다시 처리
+    setProductPrice(parseInt(unformatPrice(value))); // 수정: 숫자 타입으로 상태 업데이트
+    validate(productName, productDescription, parseInt(value), productTag); // 가격에 대한 유효성 검사 추가
   };
 
   // 태그 입력 변경 핸들러
-  const handleTagChange = (e) => {
+  const handleTagChange = (e: ChangeEvent<HTMLInputElement>) => {
     setProductTag(e.target.value); // 입력된 태그 상태 업데이트
     validate(productName, productDescription, productPrice, e.target.value); // 태그에 대한 유효성 검사
   };
 
   // 태그 추가 핸들러
-  const handleAddTag = (e) => {
+  const handleAddTag = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && productTag.trim() !== "") {
       const tagWithHash = "#" + productTag.trim(); // 입력된 태그 앞에 '#'을 추가
       if (!tags.includes(tagWithHash)) {
@@ -64,12 +70,12 @@ export function MainRegistration() {
   };
 
   // 태그 제거 핸들러
-  const handleRemoveTag = (tagToRemove) => {
+  const handleRemoveTag = (tagToRemove: string) => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
   // 입력 필드 터치 상태 변경 핸들러
-  const handleBlur = (field) => {
+  const handleBlur = (field: keyof TouchedState) => {
     setTouched((prev) => ({
       ...prev,
       [field]: true,
@@ -77,7 +83,7 @@ export function MainRegistration() {
   };
 
   // 폼 제출 핸들러
-  const handleRegistration = async (e) => {
+  const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // 유효성 검사 실행
@@ -86,14 +92,11 @@ export function MainRegistration() {
     // 유효성 검사를 통과하지 않으면 리턴
     if (!isFormValid) return;
 
-    // 쉼표 제거 후 서버로 전송할 데이터 객체 준비
-    const formattedPrice = unformatPrice(productPrice); // 쉼표를 제거한 가격
-
     // 서버로 전송할 데이터 객체
     const productData = {
       name: productName,
       description: productDescription,
-      price: formattedPrice, // 쉼표를 제거한 숫자 값
+      price: productPrice, // 쉼표를 제거한 숫자 값
       tags: tags.map((tag) => tag.replace(/^#/, "")),
     };
 
@@ -106,7 +109,7 @@ export function MainRegistration() {
       // 등록 후 초기화
       setProductName("");
       setProductDescription("");
-      setProductPrice("");
+      setProductPrice(0);
       setProductTag("");
       setTags([]);
       setTouched({
