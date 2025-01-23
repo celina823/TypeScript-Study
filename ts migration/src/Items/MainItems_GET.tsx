@@ -4,6 +4,8 @@ import DefaultImage from "../Assets/img_default.png";
 import { MainItemsGetPagination } from "./MainItems_GET_Pagination"; // 페이지네이션 컴포넌트 임포트
 import IcHeart from "../Assets/Ic_heart.png";
 
+const API_URL = "https://five-sprint-mission-be-1.onrender.com"; //배포한 api url 추가
+
 interface Product {
   name: string;
   price: number;
@@ -34,7 +36,7 @@ export function MainItemsGET({ page = 1, keyword = "" }: MainItemsGETProps) {
       try {
         // 페이지 번호를 쿼리 파라미터로 전달
         const response = await axios.get(
-          `http://localhost:3001/product?page=${currentPage}&limit=${pageSize}&sort=createdAt&order=desc`
+          `${API_URL}/product?page=${currentPage}&limit=${pageSize}&sort=createdAt&order=desc`
         );
         setData(response.data); // 데이터를 상태에 저장
         setTotalCount(response.data.totalItems); // 전체 데이터 개수 저장
