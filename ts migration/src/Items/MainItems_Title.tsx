@@ -3,22 +3,23 @@ import IconSearch from "../Assets/Ic_Search.png";
 import { useNavigate } from "react-router-dom";
 
 export function MainItemsTitle() {
-  const [keyword, setKeyword] = useState(""); // 검색어를 상태로 관리
-  const [searchKeyword, setSearchKeyword] = useState(""); //엔터키로 설정될 검색어 상태 관리
+  const [keyword, setKeyword] = useState<string>(""); // 검색어를 상태로 관리
+  const [searchKeyword, setSearchKeyword] = useState<string>(""); //엔터키로 설정될 검색어 상태 관리
   const navigate = useNavigate(); //페이지 이동을 위함
 
   /*input값을 api 요청하는 데에 필요함*/
   // input 값 변경 핸들러
-  const handleKeywordChange = (e) => {
-    setKeyword(e.target.value);
+  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //타입 지정: input에서 발생하는 키보드 이벤트
+    const target = e.target as HTMLInputElement;
+    setKeyword(target.value);
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setSearchKeyword(keyword);
     }
   };
-  /*여기까지!*/
 
   const handleSignupSellProductBtn = () => {
     navigate("/registration"); //상품 등록페이지 /registration로 이동

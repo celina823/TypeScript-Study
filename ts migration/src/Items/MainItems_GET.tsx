@@ -4,10 +4,28 @@ import DefaultImage from "../Assets/img_default.png";
 import { MainItemsGetPagination } from "./MainItems_GET_Pagination"; // 페이지네이션 컴포넌트 임포트
 import IcHeart from "../Assets/Ic_heart.png";
 
-export function MainItemsGET({ page = 1, keyword = "" }) {
-  const [data, setData] = useState(null); // 데이터를 저장할 상태
-  const [currentPage, setCurrentPage] = useState(page); // 현재 페이지 상태 관리
-  const [totalCount, setTotalCount] = useState(0); // 전체 데이터 개수 상태
+interface Product {
+  name: string;
+  price: number;
+  image: string | null;
+  id: number;
+}
+
+interface ProductResponse {
+  totalItems: number;
+  products: Product[];
+}
+
+interface MainItemsGETProps {
+  page: number;
+  keyword?: string;
+}
+
+export function MainItemsGET({ page = 1, keyword = "" }: MainItemsGETProps) {
+  const [data, setData] = useState<ProductResponse | null>(null); // 데이터를 저장할 상태
+  //가져온 데이터들 ProductResponse, 질문하기: 기본값 null은 어떻게 처리해야하는지?
+  const [currentPage, setCurrentPage] = useState<number>(page); // 현재 페이지 상태 관리
+  const [totalCount, setTotalCount] = useState<number>(0); // 전체 데이터 개수 상태
   const pageSize: number = 10; // 한 페이지당 보여줄 항목 수
 
   // 데이터 불러오는 useEffect 훅
@@ -27,21 +45,21 @@ export function MainItemsGET({ page = 1, keyword = "" }) {
     fetchData(); // 데이터를 가져오는 함수 실행
   }, [currentPage]); // 페이지가 변경될 때마다 데이터를 새로 가져옴
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > Math.ceil(totalCount / pageSize)) return;
     setCurrentPage(newPage); // 페이지 변경 처리
   };
 
   // 5개씩 데이터를 나누는 함수
-  const chunkData = (data) => {
-    const chunked = [];
+  const chunkData = (data: Product[]): Product[] => {
+    const chunked: Product[] = [];
     for (let i = 0; i < data.length; i++) {
       chunked.push(data[i]);
     }
     return chunked;
   };
   // 1000단위마다 쉼표 넣는 정규 표현식
-  const formatPrice = (price) => {
+  const formatPrice = (price: number) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
