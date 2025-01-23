@@ -17,7 +17,7 @@
 
     /* Output settings */
     "composite": true, // 필수: 프로젝트 참조를 사용하기 위해 추가
-    "emitDeclarationOnly": false, // 필수: 출력 파일이 필요하므로 noEmit을 비활성화
+    "emitDeclarationOnly": true, // 필수: 출력 JS 파일 생성을 하지 않고, 타입 선언 파일만 생성
 
     /* Linting */
     "strict": true,
